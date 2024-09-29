@@ -32,3 +32,7 @@ func (s *UserService) UpdateUser(id primitive.ObjectID, user *models.User) (*mon
 func (s *UserService) DeleteUser(id primitive.ObjectID) (*mongo.DeleteResult, error) {
     return s.Repository.Delete(id)
 }
+
+func (s * UserService) Login(email string, password string) (models.User, error) {
+    return s.Repository.Login(email, password)
+}

@@ -1,12 +1,14 @@
 package controllers
 
 import (
-    "encoding/json"
-    "FirstProyectWebEngineering/models"
-    "FirstProyectWebEngineering/services"
-    "net/http"
-    "go.mongodb.org/mongo-driver/bson/primitive"
-    "github.com/gorilla/mux"
+	"FirstProyectWebEngineering/models"
+	"FirstProyectWebEngineering/services"
+	"encoding/json"
+	"log"
+	"net/http"
+
+	"github.com/gorilla/mux"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type UserController struct {
@@ -66,5 +68,25 @@ func (c *UserController) DeleteUser(w http.ResponseWriter, r *http.Request) {
         http.Error(w, err.Error(), http.StatusInternalServerError)
         return
     }
+    json.NewEncoder(w).Encode(result)
+}
+
+
+func (c *UserController) Login(w http.ResponseWriter, r *http.Request) {
+    var user models.User
+
+    if err := json.NewDecoder(r.Body).Decode(&user); err != nil {
+        http.Error(w, "Invalid request body", http.StatusBadRequest)
+        return
+    }
+
+    log.Printf("User login attempt: %s", user.Email) // Add this for logging
+
+    result, err := c.Service.Login(user.Email, user.Password) 
+    if err != nil {
+        http.Error(w, err.Error(), http.StatusUnauthorized)
+        return
+    }
+
     json.NewEncoder(w).Encode(result)
 }
