@@ -10,16 +10,17 @@ import (
 var DB *mongo.Database
 
 func ConnectDB() *mongo.Database {
-	clientOptions := options.Client().ApplyURI("mongodb://localhost:27017")
+	// Replace with your MongoDB credentials and connection string
+	clientOptions := options.Client().ApplyURI("mongodb+srv://user_test:Ismacs2003@firstproyectwebengineer.b6xlw.mongodb.net/?retryWrites=true&w=majority&appName=FirstProyectWebEngineering")
 	client, err := mongo.Connect(context.Background(), clientOptions)
-	if err!= nil {
-        log.Fatal(err)
-    }
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	err = client.Ping(context.Background(), nil)
-	if err!= nil {
-        log.Fatal(err)
-    }
+	if err != nil {
+		log.Fatal(err)
+	}
 	log.Println("Connected to MongoDB!")
 	DB = client.Database("FirstProyectWebEngineering")
 	return DB
