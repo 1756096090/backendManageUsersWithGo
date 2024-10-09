@@ -33,7 +33,7 @@ func (c *UserController) CreateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.WriteHeader(http.StatusCreated) // Set HTTP status code for resource creation
+	w.WriteHeader(http.StatusCreated) 
 	json.NewEncoder(w).Encode(result)
 }
 
@@ -122,7 +122,7 @@ func (c *UserController) Login(w http.ResponseWriter, r *http.Request) {
 
 	expirationTime := time.Now().Add(24 * time.Hour)
 	claims := &Claims{
-		ID: storedUser.ID, // Asegúrate de usar el ID del usuario almacenado
+		ID: storedUser.ID, 
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(expirationTime),
 		},
@@ -135,11 +135,10 @@ func (c *UserController) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Responder con el token y el usuario
 	response := map[string]interface{}{
 		"token":   tokenString,
 		"message": "Login successful",
-		"user":    storedUser, // Incluir el usuario en la respuesta
+		"user":    storedUser, 
 	}
 
 	w.Header().Set("Content-Type", "application/json")
