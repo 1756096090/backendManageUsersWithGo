@@ -55,15 +55,14 @@ func (r *UserRepository) Delete(id primitive.ObjectID) (*mongo.DeleteResult, err
 
 func (r *UserRepository) Login(email string, password string) (models.User, error) {
     collection := config.DB.Collection("users")
+    
     var user models.User
 
-    fmt.Println("Email:", email)
-    fmt.Println("Password:", password)
-
-    err := collection.FindOne(context.Background(), bson.M{"email": email, "address": password}).Decode(&user)
+    err := collection.FindOne(context.Background(), bson.M{"email": email, "password": password}).Decode(&user)
     if err != nil {
         fmt.Println("Error finding user:", err)
+        return user, err
     }
 
-    return user, err
+    return user, nil
 }
