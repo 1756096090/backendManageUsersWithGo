@@ -13,17 +13,30 @@ import (
 )
 
 func main() {
-    // Connect to the database
     config.ConnectDB()
 
-    // Initialize repositories, services, and controllers
     userRepository := repositories.UserRepository{}
     userService := services.UserService{Repository: userRepository}
     userController := controllers.UserController{Service: userService}
+    
+    employeeRepository := repositories.EmployeeRepository{}
+    employeeService := services.EmployeeService{Repository: employeeRepository}
+    employeeController := controllers.EmployeeController{Service: employeeService}
 
-    // Create a new router
+    proyectRepository := repositories.ProyectRepository{}
+    proyectService := services.ProyectService{Repository: proyectRepository}
+    proyectController := controllers.ProyectController{Service: proyectService}
+
+    taskRepository := repositories.TaskRepository{}
+    taskService := services.TaskService{Repository: taskRepository}
+    taskController := controllers.TaskController{Service: taskService}
+    
+
     router := mux.NewRouter()
     routes.UserRoutes(router, userController)
+    routes.EmployeeRoutes(router, employeeController)
+    routes.ProyectRoutes(router, proyectController)
+    routes.TaskRoutes(router, &taskController, &employeeController, &proyectController )
 
 
     corsOptions := handlers.AllowedOrigins([]string{"*"}) 
