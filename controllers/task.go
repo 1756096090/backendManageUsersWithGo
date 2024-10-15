@@ -5,7 +5,6 @@ import (
 	"FirstProyectWebEngineering/services"
 	"encoding/json"
 	"net/http"
-	"fmt"
 	"github.com/gorilla/mux"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"time"
@@ -234,22 +233,25 @@ func (c *TaskController) GetTasksBetweenDates(w http.ResponseWriter, r *http.Req
 		return
 	}
 
-	fmt.Printf("Starting tasks between %s and %s", startDate, endDate)
 
 	tasks, err := c.Service.GetTasksBetweenDates(startDate, endDate)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	fmt.Printf("tasks %s", tasks)
 
-	var filteredTasks []TaskResponse
+	var filteredTasks []TaskDuration
 	for _, task := range tasks {
-		if task.IsCompleted{ 
+		if !task.IsCompleted{ 
 			employee, _ := c.EmployeeService.GetEmployeeByID(task.ID_Employee)
 			project, _ := c.ProyectService.GetProyectByID(task.ID_Project)
+			durationDays := int(task.EndDate.Sub(task.StartDate).Hours()/24)
+			today := time.Now()
+			overdueDays := int(today.Sub(task.EndDate).Hours()/24)
 
-			taskResponse := TaskResponse{
+			
+
+			taskResponse := TaskDuration{
 				ID:           task.ID,
 				Name:         task.Name,
 				Description:  task.Description,
@@ -258,6 +260,8 @@ func (c *TaskController) GetTasksBetweenDates(w http.ResponseWriter, r *http.Req
 				StartDate:    task.StartDate,
 				EndDate:      task.EndDate,
 				IsCompleted:  task.IsCompleted,
+				DurationDays: durationDays,
+				OverdueDays: overdueDays,
 			}
 			filteredTasks = append(filteredTasks, taskResponse)
 		}
